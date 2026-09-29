@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/step_by_step
+    username: step_by_step
+    password: secret
+  docker:
+    compose:
+      enabled: true
+  jpa:
+    show-sql: true
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+logging:
+  level:
+    com.renanloureiroo.stepbystep: DEBUG

@@ -1,0 +1,52 @@
+server:
+  servlet:
+    context-path: /api
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: step-by-step
+  jackson:
+    default-property-inclusion: non_null
+  threads:
+    virtual:
+      enabled: true
+  docker:
+    compose:
+      enabled: false
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  tracing:
+    sampling:
+      probability: 1.0
+
+springdoc:
+  api-docs:
+    enabled: ${API_DOCS_ENABLED:false}
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: ${API_DOCS_ENABLED:false}
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+    doc-expansion: none
+  show-actuator: false
+
+logging:
+  level:
+    com.renanloureiroo.stepbystep: INFO

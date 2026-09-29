@@ -1,0 +1,12 @@
+target/
+.git/
+.github/
+.specify/
+.agents/
+.claude/
+docs/
+*.md
+
+**/application-local.yml
+**/application-local.yaml
+**/application-local.properties

@@ -1,0 +1,25 @@
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### IDEs ###
+.idea/
+.vscode/
+*.iws
+*.iml
+*.ipr
+.classpath
+.factorypath
+.project
+.settings/
+
+### Local configuration ###
+**/application-local.yml
+**/application-local.yaml
+**/application-local.properties
+!**/application-local.yml.example
+
+### Operating system ###
+.DS_Store
