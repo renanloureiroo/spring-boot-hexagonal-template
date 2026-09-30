@@ -7,7 +7,7 @@ import com.renanloureiroo.stepbystep.modules.example.infra.database.jpa.reposito
 import com.renanloureiroo.stepbystep.modules.example.infra.events.NoteCreatedListener;
 import com.renanloureiroo.stepbystep.modules.example.infra.http.dtos.CreateNoteRequestDTO;
 import com.renanloureiroo.stepbystep.modules.example.infra.http.dtos.NoteResponseDTO;
-import com.renanloureiroo.stepbystep.testsupport.annotations.E2E;
+import com.renanloureiroo.stepbystep.testsupport.AbstractE2ETest;
 import com.renanloureiroo.stepbystep.testsupport.database.DatabaseCleaner;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.client.RestTestClient;
 
-@E2E
 @DisplayName("/notes")
-class NoteControllerE2ETest {
+class NoteControllerE2ETest extends AbstractE2ETest {
 
   @Autowired RestTestClient client;
   @Autowired NoteJpaRepository notes;
