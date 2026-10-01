@@ -1,6 +1,6 @@
 # Arquitetura do backend
 
-Este documento define como o backend do **Step by Step** deve ser organizado e
+Este documento define como um backend criado a partir deste template deve ser organizado e
 como novas funcionalidades devem ser construídas. O projeto ainda está no início;
 portanto, este texto é prescritivo. Quando código e documento divergirem, a
 divergência deve ser resolvida no mesmo pull request.
@@ -50,10 +50,10 @@ Lombok só é aceito quando não introduz semântica de framework, por exemplo
 
 ## 3. Estrutura do código
 
-O namespace inicial será `com.renanloureiroo.stepbystep`:
+O namespace inicial será `com.renanloureiroo.hexagonal`:
 
 ```text
-src/main/java/com/renanloureiroo/stepbystep
+src/main/java/com/renanloureiroo/hexagonal
 ├── core
 │   ├── entity
 │   ├── error
@@ -62,7 +62,7 @@ src/main/java/com/renanloureiroo/stepbystep
 │   ├── transaction
 │   └── usecase
 ├── infra
-│   ├── StepByStepApplication.java
+│   ├── HexagonalApplication.java
 │   ├── http
 │   │   ├── config
 │   │   ├── dtos

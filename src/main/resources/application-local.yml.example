@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/step_by_step
-    username: step_by_step
+    url: jdbc:postgresql://localhost:5432/hexagonal_template
+    username: hexagonal_template
     password: secret
   docker:
     compose:
@@ -17,4 +17,4 @@ springdoc:
 
 logging:
   level:
-    com.renanloureiroo.stepbystep: DEBUG
+    com.renanloureiroo.hexagonal: DEBUG

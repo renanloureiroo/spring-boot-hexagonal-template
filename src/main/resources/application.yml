@@ -5,7 +5,7 @@ server:
 
 spring:
   application:
-    name: step-by-step
+    name: hexagonal-template
   jackson:
     default-property-inclusion: non_null
   threads:
@@ -49,4 +49,4 @@ springdoc:
 
 logging:
   level:
-    com.renanloureiroo.stepbystep: INFO
+    com.renanloureiroo.hexagonal: INFO

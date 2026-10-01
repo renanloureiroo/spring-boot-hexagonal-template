@@ -1,4 +1,4 @@
-# Spring Boot Step by Step
+# Spring Boot Hexagonal Template
 
 Template de backend Java 21 com Spring Boot, arquitetura modular, PostgreSQL,
 Flyway, OpenTelemetry e Testcontainers.
@@ -52,7 +52,7 @@ Os testes E2E exigem Docker. Veja [docs/TESTS.md](docs/TESTS.md).
 ## Imagem da aplicação
 
 ```bash
-docker build -t step-by-step .
+docker build -t spring-boot-hexagonal-template .
 ```
 
 ## Usando como template
@@ -60,7 +60,7 @@ docker build -t step-by-step .
 Depois de criar um repositório a partir deste template:
 
 1. altere `groupId`, `artifactId`, `name` e `description` no `pom.xml`;
-2. renomeie o pacote `com.renanloureiroo.stepbystep`;
+2. renomeie o pacote `com.renanloureiroo.hexagonal`;
 3. ajuste `spring.application.name` e as credenciais locais;
 4. remova ou renomeie `modules/example` e sua migration;
 5. atualize os metadados em `OpenApiConfig`;

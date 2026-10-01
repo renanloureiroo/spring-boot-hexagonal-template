@@ -12,9 +12,9 @@
   </parent>
 
   <groupId>com.renanloureiroo</groupId>
-  <artifactId>step-by-step</artifactId>
+  <artifactId>spring-boot-hexagonal-template</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>step-by-step</name>
+  <name>spring-boot-hexagonal-template</name>
   <description>Template de backend Java com Spring Boot</description>
 
   <properties>

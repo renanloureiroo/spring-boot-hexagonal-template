@@ -1,6 +1,6 @@
 # Testes do backend
 
-Este documento define como provar o comportamento do backend do **Step by Step**.
+Este documento define como provar o comportamento de um backend criado a partir deste template.
 Ele complementa [ARCHITECTURE.md](ARCHITECTURE.md): a arquitetura descreve as
 fronteiras; este documento define o teste adequado para cada uma.
 
@@ -70,7 +70,7 @@ A árvore de testes espelha a de produção e concentra utilidades compartilhada
 `testsupport`:
 
 ```text
-src/test/java/com/renanloureiroo/stepbystep
+src/test/java/com/renanloureiroo/hexagonal
 ├── core
 ├── infra
 ├── modules
@@ -264,7 +264,7 @@ A anotação composta concentra a configuração comum:
 @Import({TestcontainersConfiguration.class, DatabaseCleaner.class})
 @AutoConfigureRestTestClient
 @SpringBootTest(
-    classes = StepByStepApplication.class,
+    classes = HexagonalApplication.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public @interface E2E {}
 ```

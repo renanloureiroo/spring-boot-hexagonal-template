@@ -9,7 +9,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn --batch-mode clean package -DskipTes
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 RUN groupadd --system app && useradd --system --gid app --no-create-home app
-COPY --from=build /app/target/step-by-step-*.jar app.jar
+COPY --from=build /app/target/spring-boot-hexagonal-template-*.jar app.jar
 USER app
 EXPOSE 8080
 ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=70 -XX:+UseSerialGC -Xss512k -Duser.timezone=UTC"
