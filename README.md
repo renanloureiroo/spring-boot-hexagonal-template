@@ -3,6 +3,12 @@
 Template de backend Java 21 com Spring Boot, arquitetura modular, PostgreSQL,
 Flyway, OpenTelemetry e Testcontainers.
 
+<!-- template:start -->
+Existe uma versão Node.js equivalente, com a mesma arquitetura, os mesmos contratos de
+erro e os mesmos tipos de teste:
+[nestjs-hexagonal-template](https://github.com/renanloureiroo/nestjs-hexagonal-template).
+
+<!-- template:end -->
 O módulo `example` implementa uma API pequena de notas para mostrar o caminho
 completo: domínio → caso de uso → porta → JPA → HTTP. Ele deve ser removido ou
 renomeado quando o primeiro contexto real for criado.

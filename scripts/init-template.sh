@@ -76,8 +76,8 @@ done
 git mv "src/main/java/${new_package//.//}/infra/HexagonalApplication.java" \
   "src/main/java/${new_package//.//}/infra/${pascal}Application.java"
 
-# A seção sobre uso do template deixa de fazer sentido no projeto gerado.
-perl -0pi -e 's/<!-- template:start -->.*?<!-- template:end -->\n?//s' README.md
+# Trechos que só fazem sentido no template deixam de existir no projeto gerado.
+perl -0pi -e 's/<!-- template:start -->.*?<!-- template:end -->\n\n?//gs' README.md
 
 git rm -q .template-init scripts/init-template.sh
 echo "Pronto. Revise com 'git status' e rode ./mvnw verify."
