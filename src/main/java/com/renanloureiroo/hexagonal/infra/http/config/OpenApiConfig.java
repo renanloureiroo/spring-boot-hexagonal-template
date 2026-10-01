@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfig {
 
   @Bean
-  public OpenAPI hexagonalOpenApi() {
+  public OpenAPI openApi() {
     return new OpenAPI()
         .info(
             new Info()

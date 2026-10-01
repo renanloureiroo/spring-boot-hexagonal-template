@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+# Renomeia o template para um projeto novo. Executado automaticamente pelo workflow
+# template-init no primeiro push de um repositório criado com "Use this template", ou
+# manualmente depois de clonar:
+#
+#   scripts/init-template.sh <nome-do-projeto> [pacote-base]
+#   scripts/init-template.sh orders-service com.acme
+set -euo pipefail
+
+usage() {
+  echo "uso: scripts/init-template.sh <nome-do-projeto> [pacote-base]" >&2
+  exit 1
+}
+
+[[ $# -ge 1 && -n "$1" ]] || usage
+cd "$(dirname "$0")/.."
+
+[[ -f .template-init ]] || {
+  echo "Este projeto já foi inicializado (.template-init ausente)." >&2
+  exit 1
+}
+
+# orders-service → orders_service, ordersservice, OrdersService, Orders Service
+kebab=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//')
+[[ -n "$kebab" ]] || usage
+snake=${kebab//-/_}
+segment=${kebab//-/}
+[[ $segment =~ ^[0-9] ]] && segment="app$segment"
+pascal=$(printf '%s' "$kebab" | awk -F- '{ for (i = 1; i <= NF; i++) printf "%s%s", toupper(substr($i, 1, 1)), substr($i, 2) }')
+title=$(printf '%s' "$kebab" | awk -F- '{ for (i = 1; i <= NF; i++) printf "%s%s%s", (i > 1 ? " " : ""), toupper(substr($i, 1, 1)), substr($i, 2) }')
+
+base=${2:-com.renanloureiroo}
+[[ $base =~ ^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*$ ]] || {
+  echo "Pacote base inválido: $base" >&2
+  exit 1
+}
+
+old_package=com.renanloureiroo.hexagonal
+new_package=$base.$segment
+
+echo "Projeto:        $kebab"
+echo "Pacote:         $new_package"
+echo "Classe main:    ${pascal}Application"
+echo "Banco local:    $snake"
+
+# Arquivos versionados, exceto tooling e o próprio mecanismo de inicialização.
+files=()
+while IFS= read -r file; do
+  files+=("$file")
+done < <(git ls-files | grep -vE '^(\.github/workflows/|\.specify/|\.claude/|\.agents/|scripts/init-template\.sh$|\.template-init$|mvnw)')
+
+# Ordem importa: nomes mais longos antes dos mais curtos que eles contêm.
+for file in "${files[@]}"; do
+  [[ -f "$file" ]] || continue
+  perl -pi -e "
+    s/\Q$old_package\E/$new_package/g;
+    s/\Qcom\/renanloureiroo\/hexagonal\E/${new_package//./\\/}/g;
+    s/HexagonalApplication/${pascal}Application/g;
+    s/<groupId>com\.renanloureiroo<\/groupId>/<groupId>$base<\/groupId>/;
+    s/^# Spring Boot Hexagonal Template\$/# $title/;
+    s/spring-boot-hexagonal-template/$kebab/g;
+    s/hexagonal-template/$kebab/g;
+    s/hexagonal_template/$snake/g;
+    s/Hexagonal Template API/$title API/g;
+  " "$file"
+done
+
+for root in src/main/java src/test/java; do
+  target="$root/${new_package//.//}"
+  if [[ "$root/com/renanloureiroo/hexagonal" != "$target" ]]; then
+    mkdir -p "$(dirname "$target")"
+    git mv "$root/com/renanloureiroo/hexagonal" "$target"
+    find "$root" -type d -empty -delete
+  fi
+done
+git mv "src/main/java/${new_package//.//}/infra/HexagonalApplication.java" \
+  "src/main/java/${new_package//.//}/infra/${pascal}Application.java"
+
+# A seção sobre uso do template deixa de fazer sentido no projeto gerado.
+perl -0pi -e 's/<!-- template:start -->.*?<!-- template:end -->\n?//s' README.md
+
+git rm -q .template-init scripts/init-template.sh
+echo "Pronto. Revise com 'git status' e rode ./mvnw verify."

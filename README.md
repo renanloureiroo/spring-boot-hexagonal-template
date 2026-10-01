@@ -55,20 +55,38 @@ Os testes E2E exigem Docker. Veja [docs/TESTS.md](docs/TESTS.md).
 docker build -t spring-boot-hexagonal-template .
 ```
 
+<!-- template:start -->
 ## Usando como template
 
-Depois de criar um repositório a partir deste template:
+Clique em **Use this template** e dê ao repositório o nome do projeto, por exemplo
+`orders-service`. No primeiro push, o workflow `template-init` renomeia tudo a
+partir desse nome e commita o resultado:
 
-1. altere `groupId`, `artifactId`, `name` e `description` no `pom.xml`;
-2. renomeie o pacote `com.renanloureiroo.hexagonal`;
-3. ajuste `spring.application.name` e as credenciais locais;
-4. remova ou renomeie `modules/example` e sua migration;
-5. atualize os metadados em `OpenApiConfig`;
-6. substitua este README pela apresentação do produto;
-7. revise as decisões abertas em `docs/ARCHITECTURE.md`.
+| Item | Exemplo para `orders-service` |
+|---|---|
+| Pacote | `com.<owner>.ordersservice` |
+| Classe principal | `OrdersServiceApplication` |
+| `artifactId` e imagem | `orders-service` |
+| `spring.application.name` | `orders-service` |
+| Banco e usuário locais | `orders_service` |
+| Título da API | `Orders Service API` |
 
-No GitHub, habilite **Settings → General → Template repository**.
+Aguarde o workflow terminar (aba **Actions**, cerca de 30 s) antes de clonar.
 
+Para inicializar localmente, depois de clonar:
+
+```bash
+scripts/init-template.sh orders-service com.acme
+```
+
+Depois da inicialização:
+
+1. ajuste `description` no `pom.xml`;
+2. remova ou renomeie `modules/example` e sua migration;
+3. substitua este README pela apresentação do produto;
+4. revise as decisões abertas em `docs/ARCHITECTURE.md`.
+
+<!-- template:end -->
 ## Documentação
 
 - [Arquitetura](docs/ARCHITECTURE.md)

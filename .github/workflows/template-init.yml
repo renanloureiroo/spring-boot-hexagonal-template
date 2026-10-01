@@ -1,0 +1,67 @@
+name: Template init
+
+# No repositório gerado por "Use this template", renomeia o projeto a partir do nome do
+# repositório no primeiro push. No próprio template, valida que a inicialização continua
+# produzindo um projeto que compila e passa nos testes.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  init:
+    if: github.event_name == 'push' && github.event.repository.name != 'spring-boot-hexagonal-template'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - id: marker
+        run: |
+          if [[ -f .template-init ]]; then
+            echo "pending=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "pending=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Initialize project
+        if: steps.marker.outputs.pending == 'true'
+        env:
+          REPOSITORY_NAME: ${{ github.event.repository.name }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          owner=$(printf '%s' "$REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9')
+          [[ $owner =~ ^[0-9] ]] && owner="x$owner"
+          scripts/init-template.sh "$REPOSITORY_NAME" "com.$owner"
+      - name: Commit
+        if: steps.marker.outputs.pending == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: initialize project from template"
+          git push
+
+  verify-init:
+    if: github.event.repository.name == 'spring-boot-hexagonal-template'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Initialize a sample project
+        run: scripts/init-template.sh orders-service com.acme
+      - name: No template name left behind
+        run: |
+          if git grep -n -E 'hexagonal[-_]template|renanloureiroo\.hexagonal|renanloureiroo/hexagonal|HexagonalApplication|Hexagonal Template' -- . ':!.github/workflows'; then
+            echo "O nome do template sobrou no projeto gerado." >&2
+            exit 1
+          fi
+      - name: Verify sample project
+        run: ./mvnw --batch-mode verify
