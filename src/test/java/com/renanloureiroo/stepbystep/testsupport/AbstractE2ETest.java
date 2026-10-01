@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Tag;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.testcontainers.grafana.LgtmStackContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
@@ -27,9 +26,4 @@ public abstract class AbstractE2ETest {
     @ServiceConnection
     protected static final PostgreSQLContainer POSTGRES =
         new PostgreSQLContainer(DockerImageName.parse("postgres:latest"));
-
-    @Container
-    @ServiceConnection
-    protected static final LgtmStackContainer LGTM =
-        new LgtmStackContainer(DockerImageName.parse("grafana/otel-lgtm:latest"));
 }
