@@ -28,7 +28,6 @@ public interface NoteControllerSwagger {
   String CREATE_INVALID =
       """
       {
-        "type": "about:blank",
         "title": "Bad Request",
         "status": 400,
         "detail": "Requisição inválida",
@@ -42,7 +41,6 @@ public interface NoteControllerSwagger {
   String LIST_INVALID =
       """
       {
-        "type": "about:blank",
         "title": "Bad Request",
         "status": 400,
         "detail": "Requisição inválida",
@@ -59,7 +57,6 @@ public interface NoteControllerSwagger {
   String ID_INVALID =
       """
       {
-        "type": "about:blank",
         "title": "Bad Request",
         "status": 400,
         "detail": "Identificador de nota inválido",
@@ -72,7 +69,6 @@ public interface NoteControllerSwagger {
   String NOT_FOUND =
       """
       {
-        "type": "about:blank",
         "title": "Not Found",
         "status": 404,
         "detail": "Nota não encontrada: f59dd6bb-e086-4fe9-a382-a00f8796d260",

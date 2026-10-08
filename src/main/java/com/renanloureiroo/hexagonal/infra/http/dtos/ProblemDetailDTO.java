@@ -7,7 +7,10 @@ import java.util.Map;
 // a resposta é o ApiExceptionHandler, com o ProblemDetail do Spring.
 @Schema(name = "ProblemDetail", description = "Erro no formato RFC 9457 com code estável")
 public record ProblemDetailDTO(
-    @Schema(example = "about:blank") String type,
+    @Schema(
+            description = "Omitido quando about:blank",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        String type,
     @Schema(example = "Not Found") String title,
     @Schema(example = "404") int status,
     @Schema(example = "Nota não encontrada: f59dd6bb-e086-4fe9-a382-a00f8796d260") String detail,
