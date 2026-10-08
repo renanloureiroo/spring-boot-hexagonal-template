@@ -120,7 +120,9 @@ class NoteControllerE2ETest extends AbstractE2ETest {
         .contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON)
         .expectBody()
         .jsonPath("$.code")
-        .isEqualTo("note.not_found");
+        .isEqualTo("note.not_found")
+        .jsonPath("$.type")
+        .doesNotExist();
   }
 
   @Test
@@ -226,11 +228,29 @@ class NoteControllerE2ETest extends AbstractE2ETest {
                 + ".examples['note.not_found'].value.code")
         .isEqualTo("note.not_found")
         .jsonPath(
+            "$.paths['/notes/{id}'].get.responses['404'].content['application/problem+json']"
+                + ".examples['note.not_found'].value.type")
+        .doesNotExist()
+        .jsonPath(
             "$.paths['/notes'].post.responses['400'].content['application/problem+json']"
                 + ".examples['request.invalid'].value.errors.title")
         .isEqualTo("Título é obrigatório")
         .jsonPath("$.components.schemas.ProblemDetail.properties.code")
         .exists();
+  }
+
+  @Test
+  void observa_as_queries_jdbc_da_requisicao() {
+    var queriesBefore = jdbcQueriesCount();
+
+    listNotes("/notes");
+
+    assertThat(jdbcQueriesCount()).isGreaterThan(queriesBefore);
+  }
+
+  private long jdbcQueriesCount() {
+    var timer = meters.find("jdbc.query").timer();
+    return timer == null ? 0 : timer.count();
   }
 
   private NotePageResponseDTO listNotes(String uri) {

@@ -26,6 +26,10 @@ spring:
         jdbc:
           time_zone: UTC
 
+jdbc:
+  # Conexão e query viram spans; a leitura do ResultSet fica de fora para não poluir o trace.
+  includes: connection, query
+
 management:
   endpoints:
     web:

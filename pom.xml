@@ -55,6 +55,13 @@
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
       <version>3.1.0</version>
     </dependency>
+    <!-- Spans de JDBC (conexão e query) como filhos do span HTTP. É o projeto indicado pela
+         documentação de observabilidade do Spring Boot; a linha 2.x é a do Spring Boot 4. -->
+    <dependency>
+      <groupId>net.ttddyy.observation</groupId>
+      <artifactId>datasource-micrometer-spring-boot</artifactId>
+      <version>2.3.0</version>
+    </dependency>
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-logback-appender-1.0</artifactId>

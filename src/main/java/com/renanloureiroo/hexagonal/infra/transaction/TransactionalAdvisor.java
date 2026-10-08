@@ -10,6 +10,7 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.ComposablePointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,8 +22,13 @@ public class TransactionalAdvisor extends AbstractPointcutAdvisor {
 
   private final transient Advice advice;
 
-  public TransactionalAdvisor(Transactor transactor) {
-    advice = (MethodInterceptor) invocation -> transactor.inTransaction(() -> proceed(invocation));
+  // O Transactor é resolvido na chamada, não na construção. O auto-proxy cria advisors durante o
+  // registro dos BeanPostProcessors; resolver aqui puxaria transactionManager e DataSource cedo
+  // demais, antes do post-processor que instrumenta o JDBC para observabilidade.
+  public TransactionalAdvisor(ObjectProvider<Transactor> transactor) {
+    advice =
+        (MethodInterceptor)
+            invocation -> transactor.getObject().inTransaction(() -> proceed(invocation));
   }
 
   @Override
