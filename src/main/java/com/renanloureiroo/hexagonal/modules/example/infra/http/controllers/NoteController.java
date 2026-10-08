@@ -2,10 +2,14 @@ package com.renanloureiroo.hexagonal.modules.example.infra.http.controllers;
 
 import com.renanloureiroo.hexagonal.modules.example.application.usecases.CreateNoteUseCase;
 import com.renanloureiroo.hexagonal.modules.example.application.usecases.GetNoteUseCase;
+import com.renanloureiroo.hexagonal.modules.example.application.usecases.ListNotesUseCase;
 import com.renanloureiroo.hexagonal.modules.example.infra.http.dtos.CreateNoteRequestDTO;
+import com.renanloureiroo.hexagonal.modules.example.infra.http.dtos.ListNotesQueryDTO;
+import com.renanloureiroo.hexagonal.modules.example.infra.http.dtos.NotePageResponseDTO;
 import com.renanloureiroo.hexagonal.modules.example.infra.http.dtos.NoteResponseDTO;
 import com.renanloureiroo.hexagonal.modules.example.infra.http.presenters.CreateNotePresenter;
 import com.renanloureiroo.hexagonal.modules.example.infra.http.presenters.GetNotePresenter;
+import com.renanloureiroo.hexagonal.modules.example.infra.http.presenters.ListNotesPresenter;
 import jakarta.validation.Valid;
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +27,19 @@ public class NoteController implements NoteControllerSwagger {
 
   private final CreateNoteUseCase createNote;
   private final GetNoteUseCase getNote;
+  private final ListNotesUseCase listNotes;
 
-  public NoteController(CreateNoteUseCase createNote, GetNoteUseCase getNote) {
+  public NoteController(
+      CreateNoteUseCase createNote, GetNoteUseCase getNote, ListNotesUseCase listNotes) {
     this.createNote = createNote;
     this.getNote = getNote;
+    this.listNotes = listNotes;
+  }
+
+  @Override
+  @GetMapping
+  public ResponseEntity<NotePageResponseDTO> list(@Valid ListNotesQueryDTO query) {
+    return ResponseEntity.ok(ListNotesPresenter.present(listNotes.execute(query.toInput())));
   }
 
   @Override

@@ -4,10 +4,12 @@ import com.renanloureiroo.hexagonal.core.error.ApplicationException;
 import io.micrometer.tracing.Tracer;
 import java.net.URI;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -27,6 +29,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
   private static final String VALIDATION_CODE = "request.invalid";
   private static final String UNEXPECTED_CODE = "internal.unexpected";
+  private static final String INVALID_FIELD_MESSAGE = "Valor inválido";
 
   private final Optional<Tracer> tracer;
 
@@ -65,7 +68,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
       HttpStatusCode status,
       WebRequest request) {
     var problem = problemOf(status, "Requisição inválida", VALIDATION_CODE, request);
-    problem.setProperty("errors", fieldErrorsOf(error));
+    problem.setProperty("errors", fieldErrorsOf(error, request.getLocale()));
     return ResponseEntity.status(status).body(problem);
   }
 
@@ -98,16 +101,28 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     return problem;
   }
 
-  private static Map<String, String> fieldErrorsOf(MethodArgumentNotValidException error) {
+  // Erro de conversão (page=abc) usa a mensagem de messages.properties (typeMismatch.<campo>),
+  // para não vazar a exceção de conversão; constraint usa a própria mensagem.
+  private Map<String, String> fieldErrorsOf(MethodArgumentNotValidException error, Locale locale) {
     return error.getBindingResult().getFieldErrors().stream()
         .collect(
             Collectors.toMap(
                 FieldError::getField,
-                fieldError ->
-                    fieldError.getDefaultMessage() == null
-                        ? "inválido"
-                        : fieldError.getDefaultMessage(),
+                fieldError -> messageOf(fieldError, locale),
                 (first, second) -> first,
                 LinkedHashMap::new));
+  }
+
+  private String messageOf(FieldError fieldError, Locale locale) {
+    var messages = getMessageSource();
+    if (fieldError.isBindingFailure() && messages != null) {
+      var resolvable =
+          new DefaultMessageSourceResolvable(fieldError.getCodes(), INVALID_FIELD_MESSAGE);
+      return messages.getMessage(resolvable, locale);
+    }
+    if (fieldError.isBindingFailure() || fieldError.getDefaultMessage() == null) {
+      return INVALID_FIELD_MESSAGE;
+    }
+    return fieldError.getDefaultMessage();
   }
 }
