@@ -18,7 +18,7 @@ Veja também [TESTS.md](TESTS.md).
 - Spring Boot 4.1, com Web MVC, Validation, Data JPA e Actuator;
 - PostgreSQL e Flyway;
 - OpenAPI com springdoc;
-- OpenTelemetry;
+- OpenTelemetry, com spans de JDBC pelo Datasource Micrometer;
 - JUnit Jupiter, AssertJ e Testcontainers;
 - Maven Wrapper.
 
@@ -279,7 +279,8 @@ as converte para conceitos HTTP.
 
 ## 10. Performance e observabilidade
 
-- listagens públicas são paginadas;
+- listagens públicas são paginadas (`page` a partir de 0, `size` de 1 a 100, padrão 20) e
+  devolvem `{ items, total }`;
 - `Pageable` e `Page` do Spring não saem de `infra`;
 - é proibida chamada a repositório ou I/O bloqueante dentro de laço;
 - consultas de coleção não podem produzir N+1;
@@ -288,6 +289,14 @@ as converte para conceitos HTTP.
 - sucesso pode ser logado no caso de uso; erro é logado uma vez, na borda;
 - estado de requisição não depende de `ThreadLocal` próprio;
 - código de request não usa `synchronized` em torno de I/O.
+
+Traces e métricas usam Micrometer Observation exportado por OTLP. O
+[Datasource Micrometer](https://github.com/jdbc-observations/datasource-micrometer),
+indicado pela documentação do Spring Boot, envolve o `DataSource` e cria spans de
+conexão e de query como filhos do span HTTP (`jdbc.includes` em `application.yml`).
+Ele depende de um `BeanPostProcessor`: bean que precise do `DataSource` ou do
+`transactionManager` não pode ser criado durante o registro dos post-processors.
+Por isso o `TransactionalAdvisor` resolve o `Transactor` só na chamada.
 
 Ainda não há SLO numérico. Ele será definido quando existir baseline real de
 tráfego e latência.

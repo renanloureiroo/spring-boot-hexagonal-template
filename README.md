@@ -160,6 +160,8 @@ Exemplo:
 curl -i -X POST http://localhost:8080/api/notes \
   -H 'Content-Type: application/json' \
   -d '{"title":"Minha primeira nota"}'
+
+curl -i 'http://localhost:8080/api/notes?page=0&size=20'
 ```
 
 ## Testes
